@@ -1,6 +1,8 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head } from "@inertiajs/vue3";
+import StudentService from "@/Services/StudentService";
+import { Head, useForm } from "@inertiajs/vue3";
+import { ref, watch } from "vue";
 
 defineProps({
     classes: {
@@ -8,6 +10,28 @@ defineProps({
         required: true,
     },
 });
+
+const form = useForm({
+    name: "",
+    email: "",
+    class_id: "",
+    section_id: "",
+});
+
+const sections = ref([]);
+
+const handleGetSections = (classId) => {
+    StudentService.getSections(classId).then((response) => {
+        sections.value = response.data;
+    });
+};
+
+watch(
+    () => form.class_id,
+    (value) => {
+        handleGetSections(value);
+    }
+);
 </script>
 
 <template>
@@ -45,6 +69,7 @@ defineProps({
                                             >Name</label
                                         >
                                         <input
+                                            v-model="form.name"
                                             type="text"
                                             id="name"
                                             class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror"
@@ -61,6 +86,7 @@ defineProps({
                                             >Email Address</label
                                         >
                                         <input
+                                            v-model="form.email"
                                             type="email"
                                             id="email"
                                             autocomplete="email"
@@ -75,6 +101,7 @@ defineProps({
                                             >Class</label
                                         >
                                         <select
+                                            v-model="form.class_id"
                                             id="class_id"
                                             class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('class_id') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror"
                                         >
@@ -98,13 +125,20 @@ defineProps({
                                             >Section</label
                                         >
                                         <select
+                                            v-model="form.section_id"
                                             id="section_id"
                                             class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('section_id') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror"
                                         >
                                             <option value="">
                                                 Select a Section
                                             </option>
-                                            <option value="1">Section A</option>
+                                            <option
+                                                v-for="section in sections"
+                                                :key="section.id"
+                                                :value="section.id"
+                                            >
+                                                {{ section.name }}
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
