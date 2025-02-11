@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ClassesResource;
 use App\Http\Resources\StudentResource;
 use App\Models\Student;
 use Illuminate\Http\Request;
@@ -26,7 +27,11 @@ class StudentController extends Controller
      */
     public function create()
     {
-        //
+        $classes = ClassesResource::collection(Student::all());
+
+        return Inertia::render('Students/Create', [
+            'classes' => $classes,
+        ]);
     }
 
     /**
