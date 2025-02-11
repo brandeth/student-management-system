@@ -1,5 +1,6 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import InputError from "@/Components/InputError.vue";
 import StudentService from "@/Services/StudentService";
 import { Head, useForm } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
@@ -19,6 +20,10 @@ const form = useForm({
 });
 
 const sections = ref([]);
+
+const handleCreateStudent = () => {
+    form.post(route("students.store"));
+};
 
 const handleGetSections = (classId) => {
     StudentService.getSections(classId).then((response) => {
@@ -47,7 +52,7 @@ watch(
         <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             <div class="lg:grid lg:grid-cols-12 lg:gap-x-5">
                 <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-12">
-                    <form>
+                    <form @submit.prevent="handleCreateStudent">
                         <div class="shadow sm:rounded-md sm:overflow-hidden">
                             <div class="bg-white py-6 px-4 space-y-6 sm:p-6">
                                 <div>
@@ -72,11 +77,16 @@ watch(
                                             v-model="form.name"
                                             type="text"
                                             id="name"
-                                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('name') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror"
+                                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            :class="{
+                                                'text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300':
+                                                    form.errors.name,
+                                            }"
                                         />
-                                        <p class="mt-1 text-sm text-red-500">
-                                            Error Message
-                                        </p>
+                                        <InputError
+                                            :message="form.errors.name"
+                                            class="mt-2"
+                                        />
                                     </div>
 
                                     <div class="col-span-6 sm:col-span-3">
@@ -90,7 +100,15 @@ watch(
                                             type="email"
                                             id="email"
                                             autocomplete="email"
-                                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('email') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror"
+                                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            :class="{
+                                                'text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300':
+                                                    form.errors.email,
+                                            }"
+                                        />
+                                        <InputError
+                                            :message="form.errors.email"
+                                            class="mt-2"
                                         />
                                     </div>
 
@@ -103,7 +121,11 @@ watch(
                                         <select
                                             v-model="form.class_id"
                                             id="class_id"
-                                            class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('class_id') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror"
+                                            class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            :class="{
+                                                'text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300':
+                                                    form.errors.class_id,
+                                            }"
                                         >
                                             <option value="">
                                                 Select a Class
@@ -116,6 +138,10 @@ watch(
                                                 {{ item.name }}
                                             </option>
                                         </select>
+                                        <InputError
+                                            :message="form.errors.class_id"
+                                            class="mt-2"
+                                        />
                                     </div>
 
                                     <div class="col-span-6 sm:col-span-3">
@@ -127,7 +153,11 @@ watch(
                                         <select
                                             v-model="form.section_id"
                                             id="section_id"
-                                            class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('section_id') text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300 @enderror"
+                                            class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            :class="{
+                                                'text-red-900 focus:ring-red-500 focus:border-red-500 border-red-300':
+                                                    form.errors.section_id,
+                                            }"
                                         >
                                             <option value="">
                                                 Select a Section
@@ -140,6 +170,10 @@ watch(
                                                 {{ section.name }}
                                             </option>
                                         </select>
+                                        <InputError
+                                            :message="form.errors.section_id"
+                                            class="mt-2"
+                                        />
                                     </div>
                                 </div>
                             </div>
